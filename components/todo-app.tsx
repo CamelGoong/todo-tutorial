@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState, useSyncExternalStore } from "react"
-import { Trash2Icon } from "lucide-react"
+import { PencilIcon, Trash2Icon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -58,7 +58,7 @@ export function TodoApp() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs text-muted-foreground">
+      <p className="text-xs text-muted-foreground" aria-live="polite">
         {canSave
           ? "할 일은 이 브라우저에 저장됩니다"
           : "이 브라우저에서는 할 일이 저장되지 않습니다"}
@@ -67,9 +67,10 @@ export function TodoApp() {
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="할 일을 입력하고 Enter"
+        placeholder="예: 우유 사기… (Enter로 추가)"
         aria-label="새 할 일"
-        autoFocus
+        name="todo"
+        autoComplete="off"
       />
       <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
         <TabsList aria-label="필터">
@@ -107,7 +108,7 @@ export function TodoApp() {
             onClick={clearCompleted}
             className="text-muted-foreground hover:text-destructive"
           >
-            완료한 일 지우기 ({completedCount})
+            완료한 일 지우기 (<span className="tabular-nums">{completedCount}</span>)
           </Button>
         </div>
       )}
@@ -157,7 +158,7 @@ function TodoItem({
   }
 
   return (
-    <li className="group flex min-h-11 items-center gap-3 rounded-lg px-2 hover:bg-muted/50">
+    <li className="group flex min-h-11 items-center gap-3 min-w-0 rounded-lg px-2 hover:bg-muted/50">
       <Checkbox
         checked={todo.completed}
         onCheckedChange={onToggle}
@@ -177,12 +178,23 @@ function TodoItem({
         <span
           onDoubleClick={startEdit}
           className={cn(
-            "flex-1 cursor-text py-2 text-sm break-all select-none",
+            "flex-1 min-w-0 cursor-text py-2 text-sm break-all",
             todo.completed && "text-muted-foreground line-through"
           )}
         >
           {todo.text}
         </span>
+      )}
+      {!editing && (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={startEdit}
+          aria-label={`${todo.text} 수정`}
+          className="text-muted-foreground"
+        >
+          <PencilIcon aria-hidden="true" />
+        </Button>
       )}
       <Button
         variant="ghost"
@@ -191,7 +203,7 @@ function TodoItem({
         aria-label={`${todo.text} 삭제`}
         className="text-muted-foreground hover:text-destructive"
       >
-        <Trash2Icon />
+        <Trash2Icon aria-hidden="true" />
       </Button>
     </li>
   )
