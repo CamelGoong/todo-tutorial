@@ -18,21 +18,47 @@
 
 ## 시작하기
 
+### 준비물
+
+- [Git](https://git-scm.com)
+- [bun](https://bun.sh) 1.3.6 이상 (패키지 매니저 겸 스크립트 실행기)
+- [Node.js](https://nodejs.org) (Next.js 실행에 필요)
+
 ```bash
-bun install
-bun dev
+bun -v   # 버전이 출력되는지 확인
 ```
 
-개발 서버는 기본적으로 [http://localhost:3000](http://localhost:3000) 에서 열립니다.
-
-자주 쓰는 스크립트:
+### 설치와 실행
 
 ```bash
-bun run build      # 프로덕션 빌드
-bun run start      # 빌드 결과 실행
+git clone https://github.com/CamelGoong/todo-tutorial.git
+cd todo-tutorial
+bun install   # 의존성 설치
+bun dev       # 개발 서버 실행
+```
+
+개발 서버는 기본적으로 [http://localhost:3000](http://localhost:3000) 에서 열립니다. 종료는 터미널에서 `Ctrl+C` 입니다.
+
+### 프로덕션 빌드로 실행
+
+```bash
+bun run build   # 프로덕션 빌드
+bun run start   # 빌드 결과 실행 (http://localhost:3000)
+```
+
+### 검사와 테스트
+
+```bash
+bun run typecheck  # 타입 검사 (tsc --noEmit)
 bun run lint       # ESLint
-bun run typecheck  # tsc --noEmit
+bun run test       # 테스트 (Vitest, 1회 실행)
 bun run format     # Prettier 포맷팅
+```
+
+`bun run test`에서 `Worker exited unexpectedly`나 `out of memory` 오류로 테스트가 시작되지 않으면 스레드 방식으로 실행해 보세요. (최신 Node.js에서 확인된 문제입니다.)
+
+```bash
+bunx vitest run --pool=threads
 ```
 
 ## 레슨별 시작 브랜치
